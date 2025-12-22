@@ -3,11 +3,14 @@
 namespace Xsolve\SalesforceClient\QueryBuilder\Expr;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Xsolve\SalesforceClient\Enum\SObjectType;
 use Xsolve\SalesforceClient\QueryBuilder\Query;
 
 class ExpressionFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ExpressionFactory
      */
@@ -16,7 +19,7 @@ class ExpressionFactoryTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = new ExpressionFactory();
     }

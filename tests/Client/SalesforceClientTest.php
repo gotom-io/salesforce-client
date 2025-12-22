@@ -5,8 +5,10 @@ namespace Xsolve\SalesforceClient\Client;
 use GuzzleHttp\Psr7\Request;
 use Http\Client\Exception\HttpException;
 use Http\Client\HttpClient;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use Xsolve\SalesforceClient\Enum\RequestMethod;
 use Xsolve\SalesforceClient\Generator\TokenGeneratorInterface;
 use Xsolve\SalesforceClient\Request\RequestInterface;
 use Xsolve\SalesforceClient\Security\Token\TokenInterface;
@@ -14,7 +16,7 @@ use Xsolve\SalesforceClient\Security\Token\TokenInterface;
 class SalesforceClientTest extends TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|HttpClient
+     * @var MockObject|HttpClient
      */
     protected $httpClient;
 
@@ -26,7 +28,7 @@ class SalesforceClientTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         $token = $this->createMock(TokenInterface::class);
 
@@ -41,30 +43,41 @@ class SalesforceClientTest extends TestCase
 
     public function testExpiredTokenFlow()
     {
-        $this->httpClient->expects($this->at(0))->method('sendRequest')->will($this->throwException($this->getExceptionMock(401)));
-        $this->httpClient->expects($this->at(1))->method('sendRequest')->willReturn($this->createMock(ResponseInterface::class));
+        $this->httpClient->expects($this->exactly(2))
+            ->method('sendRequest')
+            ->willReturnCallback(function () {
+                static $count = 0;
+                if ($count++ === 0) {
+                    throw $this->getExceptionMock(401);
+                }
+                return $this->createMock(ResponseInterface::class);
+            });
 
-        $response = $this->salesforceClient->doRequest($this->createMock(RequestInterface::class));
+        $request = $this->createMock(RequestInterface::class);
+        $request->method('getMethod')->willReturn(RequestMethod::GET());
+        $response = $this->salesforceClient->doRequest($request);
 
-        $this->assertInternalType('array', $response);
+        $this->assertIsArray($response);
     }
 
-    /**
-     * @expectedException \Http\Client\Exception\HttpException
-     */
     public function testInvalidToken()
     {
+        $this->expectException(\Http\Client\Exception\HttpException::class);
         $this->httpClient->method('sendRequest')->will($this->throwException($this->getExceptionMock(404)));
 
-        $this->salesforceClient->doRequest($this->createMock(RequestInterface::class));
+        $request = $this->createMock(RequestInterface::class);
+        $request->method('getMethod')->willReturn(RequestMethod::GET());
+        $this->salesforceClient->doRequest($request);
     }
 
     public function testValidToken()
     {
         $this->httpClient->method('sendRequest')->willReturn($this->createMock(ResponseInterface::class));
-        $response = $this->salesforceClient->doRequest($this->createMock(RequestInterface::class));
+        $request = $this->createMock(RequestInterface::class);
+        $request->method('getMethod')->willReturn(RequestMethod::GET());
+        $response = $this->salesforceClient->doRequest($request);
 
-        $this->assertInternalType('array', $response);
+        $this->assertIsArray($response);
     }
 
     protected function getExceptionMock(int $code): HttpException

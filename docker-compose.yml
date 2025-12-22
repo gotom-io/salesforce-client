@@ -1,0 +1,9 @@
+services:
+    gemini:
+        build:
+            dockerfile: .gemini/Dockerfile
+        volumes:
+            - ./:/app
+        environment:
+            GEMINI_API_KEY: ${GEMINI_API_KEY:?err}
+        tty: true

@@ -2,15 +2,14 @@
 
 namespace Xsolve\SalesforceClient\Request;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Xsolve\SalesforceClient\Enum\ContentType;
 use Xsolve\SalesforceClient\Enum\RequestMethod;
 
 class QueryTest extends TestCase
 {
-    /**
-     * @dataProvider endpointsProvider
-     */
+    #[DataProvider('endpointsProvider')]
     public function testQuery($query, $endpoint)
     {
         $request = new Query($query);
@@ -21,7 +20,7 @@ class QueryTest extends TestCase
         $this->assertSame(ContentType::FORM(), $request->getContentType());
     }
 
-    public function endpointsProvider()
+    public static function endpointsProvider()
     {
         return [
             [

@@ -2,6 +2,7 @@
 
 namespace Xsolve\SalesforceClient\Request;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Xsolve\SalesforceClient\Enum\ContentType;
 use Xsolve\SalesforceClient\Enum\RequestMethod;
@@ -9,9 +10,7 @@ use Xsolve\SalesforceClient\Enum\SObjectType;
 
 class GetTest extends TestCase
 {
-    /**
-     * @dataProvider dataProvieder
-     */
+    #[DataProvider('dataProvieder')]
     public function testGetRequest(
         SObjectType $type,
         string $id,
@@ -28,7 +27,7 @@ class GetTest extends TestCase
         $this->assertSame(ContentType::FORM(), $request->getContentType());
     }
 
-    public function dataProvieder()
+    public static function dataProvieder()
     {
         return [
             [

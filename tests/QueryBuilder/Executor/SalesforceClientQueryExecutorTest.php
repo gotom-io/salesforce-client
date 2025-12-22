@@ -2,8 +2,10 @@
 
 namespace Xsolve\SalesforceClient\QueryBuilder\Executor;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Xsolve\SalesforceClient\Client\SalesforceClient;
 use Xsolve\SalesforceClient\QueryBuilder\Query;
@@ -13,6 +15,8 @@ use Xsolve\SalesforceClient\Request\QueryNext;
 
 class SalesforceClientQueryExecutorTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var SalesforceClientQueryExecutor
      */
@@ -26,15 +30,13 @@ class SalesforceClientQueryExecutorTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->client = $this->prophesize(SalesforceClient::class);
         $this->executor = new SalesforceClientQueryExecutor($this->client->reveal());
     }
 
-    /**
-     * @dataProvider responseProvider
-     */
+    #[DataProvider('responseProvider')]
     public function testGetRecords(
         array $response,
         int $expectedCount,
@@ -60,9 +62,7 @@ class SalesforceClientQueryExecutorTest extends TestCase
         $this->assertSame($expectedNextRecordsIdentifier, $records->getNextIdentifier());
     }
 
-    /**
-     * @dataProvider responseProvider
-     */
+    #[DataProvider('responseProvider')]
     public function testGetNextRecords(
         array $response,
         int $expectedCount,
@@ -107,7 +107,7 @@ class SalesforceClientQueryExecutorTest extends TestCase
         $this->assertSame($response['records'], iterator_to_array($records));
     }
 
-    public function responseProvider(): array
+    public static function responseProvider(): array
     {
         return [
             [

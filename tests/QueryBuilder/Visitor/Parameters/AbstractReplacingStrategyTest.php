@@ -2,6 +2,7 @@
 
 namespace Xsolve\SalesforceClient\QueryBuilder\Visitor\Parameters;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractReplacingStrategyTest extends TestCase
@@ -14,7 +15,7 @@ abstract class AbstractReplacingStrategyTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->strategy = $this->createStrategy();
     }
@@ -30,9 +31,7 @@ abstract class AbstractReplacingStrategyTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider replaceValuesProvider
-     */
+    #[DataProvider('replaceValuesProvider')]
     public function testReplace($value, string $expected)
     {
         $this->assertSame($expected, $this->strategy->replace($value));
@@ -42,5 +41,5 @@ abstract class AbstractReplacingStrategyTest extends TestCase
 
     abstract protected function getApplicableType(): Type;
 
-    abstract public function replaceValuesProvider(): array;
+    abstract public static function replaceValuesProvider(): array;
 }

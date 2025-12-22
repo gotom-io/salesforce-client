@@ -14,7 +14,7 @@ class IntReplacingStrategyTest extends AbstractReplacingStrategyTest
         return Type::INT();
     }
 
-    public function replaceValuesProvider(): array
+    public static function replaceValuesProvider(): array
     {
         return [
             [0, '0'],

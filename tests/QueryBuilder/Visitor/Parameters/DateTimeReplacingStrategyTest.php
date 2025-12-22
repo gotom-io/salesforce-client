@@ -14,7 +14,7 @@ class DateTimeReplacingStrategyTest extends AbstractReplacingStrategyTest
         return Type::DATETIME();
     }
 
-    public function replaceValuesProvider(): array
+    public static function replaceValuesProvider(): array
     {
         return [
             [1484575327, '2017-01-16T14:02:07+00:00'],

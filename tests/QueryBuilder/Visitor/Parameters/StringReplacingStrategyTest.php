@@ -14,7 +14,7 @@ class StringReplacingStrategyTest extends AbstractReplacingStrategyTest
         return Type::STRING();
     }
 
-    public function replaceValuesProvider(): array
+    public static function replaceValuesProvider(): array
     {
         return [
             [null, '\'\''],

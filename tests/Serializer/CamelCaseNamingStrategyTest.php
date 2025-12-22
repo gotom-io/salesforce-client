@@ -3,10 +3,14 @@
 namespace Xsolve\SalesforceClient\Serializer;
 
 use JMS\Serializer\Metadata\PropertyMetadata;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class CamelCaseNamingStrategyTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var CamelCaseNamingStrategy
      */
@@ -15,14 +19,12 @@ class CamelCaseNamingStrategyTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->strategy = new CamelCaseNamingStrategy();
     }
 
-    /**
-     * @dataProvider propertyNameProvider
-     */
+    #[DataProvider('propertyNameProvider')]
     public function testTranslateName(string $propertyName, string $expectedName)
     {
         $metadata = $this->prophesize(PropertyMetadata::class);
@@ -34,7 +36,7 @@ class CamelCaseNamingStrategyTest extends TestCase
     /**
      * @return array
      */
-    public function propertyNameProvider()
+    public static function propertyNameProvider()
     {
         return [
             ['', ''],

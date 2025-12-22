@@ -4,6 +4,7 @@ use JMS\Serializer\ArrayTransformerInterface;
 use JMS\Serializer\SerializationContext;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Xsolve\SalesforceClient\Client\SalesforceClient;
 use Xsolve\SalesforceClient\Enum\AbstractSObjectType;
@@ -17,6 +18,8 @@ use Xsolve\SalesforceClient\Request\Update;
 
 class SObjectRepositoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var SObjectRepository
      */
@@ -35,7 +38,7 @@ class SObjectRepositoryTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->client = $this->prophesize(SalesforceClient::class);
         $this->serializer = $this->prophesize(ArrayTransformerInterface::class);
@@ -97,11 +100,9 @@ class SObjectRepositoryTest extends TestCase
         $this->assertSame($object, $this->repository->find(SObjectMock::class, 'test id'));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testFindUnsupported()
     {
+        $this->expectException(\RuntimeException::class);
         $this->repository->find(\stdClass::class, 'test id');
     }
 

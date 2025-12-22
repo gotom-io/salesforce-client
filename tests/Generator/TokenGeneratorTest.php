@@ -3,6 +3,7 @@
 namespace Xsolve\SalesforceClient\Generator;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Xsolve\SalesforceClient\Security\Authentication\AuthenticatorInterface;
 use Xsolve\SalesforceClient\Security\Authentication\Credentials;
@@ -11,6 +12,8 @@ use Xsolve\SalesforceClient\Storage\TokenStorageInterface;
 
 class TokenGeneratorTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var TokenGenerator
      */
@@ -34,7 +37,7 @@ class TokenGeneratorTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->credentials = $this->prophesize(Credentials::class)->reveal();
         $this->authenticator = $this->prophesize(AuthenticatorInterface::class);

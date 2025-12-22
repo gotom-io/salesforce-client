@@ -2,10 +2,14 @@
 
 namespace Xsolve\SalesforceClient\QueryBuilder\Visitor\Parameters;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class ReplacingStrategyCollectionTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ReplacingStrategyCollection
      */
@@ -14,7 +18,7 @@ class ReplacingStrategyCollectionTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->collection = new ReplacingStrategyCollection();
     }
@@ -25,9 +29,7 @@ class ReplacingStrategyCollectionTest extends TestCase
         $this->assertTrue(isset($this->collection[null]));
     }
 
-    /**
-     * @dataProvider typesProvider
-     */
+    #[DataProvider('typesProvider')]
     public function testOffsetExists(Type $type)
     {
         $this->assertTrue(isset($this->collection[$type]));
@@ -38,17 +40,13 @@ class ReplacingStrategyCollectionTest extends TestCase
         $this->assertInstanceOf(ReplacingStrategyInterface::class, $this->collection[null]);
     }
 
-    /**
-     * @dataProvider typesProvider
-     */
+    #[DataProvider('typesProvider')]
     public function testOffsetGet(Type $type)
     {
         $this->assertInstanceOf(ReplacingStrategyInterface::class, $this->collection[$type]);
     }
 
-    /**
-     * @dataProvider typesProvider
-     */
+    #[DataProvider('typesProvider')]
     public function testOffsetSetUnset(Type $type)
     {
         unset($this->collection[$type]);
@@ -60,7 +58,7 @@ class ReplacingStrategyCollectionTest extends TestCase
         $this->assertSame($strategy->reveal(), $this->collection[$type]);
     }
 
-    public function typesProvider(): array
+    public static function typesProvider(): array
     {
         return array_map(function (Type $type) {
             return [$type];

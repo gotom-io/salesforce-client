@@ -14,7 +14,7 @@ class BoolReplacingStrategyTest extends AbstractReplacingStrategyTest
         return Type::BOOL();
     }
 
-    public function replaceValuesProvider(): array
+    public static function replaceValuesProvider(): array
     {
         return [
             [1, 'true'],

@@ -4,6 +4,7 @@
     <testsuites>
         <testsuite name="AllTests">
             <directory>tests/</directory>
+            <exclude>tests/QueryBuilder/Visitor/Parameters/AbstractReplacingStrategyTest.php</exclude>
         </testsuite>
     </testsuites>
 

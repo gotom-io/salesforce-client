@@ -2,9 +2,11 @@
 
 namespace Xsolve\SalesforceClient\Security\Authentication;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Http\Client\HttpClient;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use Xsolve\SalesforceClient\Security\Authentication\Strategy\RegenerateStrategyInterface;
 use Xsolve\SalesforceClient\Security\Token\TokenInterface;
 
@@ -16,34 +18,34 @@ class AuthenticatorTest extends TestCase
     protected $authenticator;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|HttpClient
+     * @var MockObject|HttpClient
      */
     protected $client;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|Credentials
+     * @var MockObject|Credentials
      */
     protected $credentials;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ResponseInterface
+     * @var MockObject|ResponseInterface
      */
     protected $response;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|RegenerateStrategyInterface
+     * @var MockObject|RegenerateStrategyInterface
      */
     protected $regenerateStrategy;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|TokenInterface
+     * @var MockObject|TokenInterface
      */
     protected $token;
 
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = $this->createMock(HttpClient::class);
         $this->credentials = $this->createMock(Credentials::class);
@@ -55,27 +57,27 @@ class AuthenticatorTest extends TestCase
         $this->authenticator = new Authenticator($this->client, [$this->regenerateStrategy]);
     }
 
-    /**
-     * @expectedException \Xsolve\SalesforceClient\Security\Authentication\Exception\InvalidAuthenticationResponseException
-     */
     public function testEmptyResponse()
     {
+        $this->expectException(\Xsolve\SalesforceClient\Security\Authentication\Exception\InvalidAuthenticationResponseException::class);
         $this->authenticator->authenticate($this->credentials);
     }
 
-    /**
-     * @expectedException \Xsolve\SalesforceClient\Security\Authentication\Exception\InvalidAuthenticationResponseException
-     */
     public function testBadResponse()
     {
-        $this->response->method('getBody')->willReturn('["key"]');
+        $this->expectException(\Xsolve\SalesforceClient\Security\Authentication\Exception\InvalidAuthenticationResponseException::class);
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->method('__toString')->willReturn('["key"]');
+        $this->response->method('getBody')->willReturn($stream);
 
         $this->authenticator->authenticate($this->credentials);
     }
 
     public function testValidResponse()
     {
-        $this->response->method('getBody')->willReturn($this->getValidResponse());
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->method('__toString')->willReturn($this->getValidResponse());
+        $this->response->method('getBody')->willReturn($stream);
 
         $token = $this->authenticator->authenticate($this->credentials);
 
@@ -87,11 +89,9 @@ class AuthenticatorTest extends TestCase
         $this->assertEquals($token->getRefreshToken(), '');
     }
 
-    /**
-     * @expectedException \Xsolve\SalesforceClient\Security\Authentication\Exception\UnsupportedCredentialsException
-     */
     public function testRegenerateStrategyNotFound()
     {
+        $this->expectException(\Xsolve\SalesforceClient\Security\Authentication\Exception\UnsupportedCredentialsException::class);
         $this->regenerateStrategy->method('supports')->willReturn(false);
 
         $this->authenticator->regenerate($this->credentials, $this->token);
@@ -100,7 +100,9 @@ class AuthenticatorTest extends TestCase
     public function testRegenerateExistingStrategy()
     {
         $this->regenerateStrategy->method('supports')->willReturn(true);
-        $this->response->method('getBody')->willReturn($this->getValidResponse());
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->method('__toString')->willReturn($this->getValidResponse());
+        $this->response->method('getBody')->willReturn($stream);
 
         $token = $this->authenticator->regenerate($this->credentials, $this->token);
 

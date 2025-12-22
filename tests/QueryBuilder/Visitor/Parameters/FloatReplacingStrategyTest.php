@@ -14,7 +14,7 @@ class FloatReplacingStrategyTest extends AbstractReplacingStrategyTest
         return Type::FLOAT();
     }
 
-    public function replaceValuesProvider(): array
+    public static function replaceValuesProvider(): array
     {
         return [
             [123, '123'],

@@ -2,6 +2,7 @@
 
 namespace Xsolve\SalesforceClient\QueryBuilder;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Xsolve\SalesforceClient\Enum\SObjectType;
 use Xsolve\SalesforceClient\QueryBuilder\Expr\Compare\AbstractCompare;
@@ -24,14 +25,12 @@ class QueryBuilderIntegrationTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->qb = new QueryBuilder();
     }
 
-    /**
-     * @dataProvider selectProvider
-     */
+    #[DataProvider('selectProvider')]
     public function testSelect(AbstractSelect $select, AbstractFrom $from, string $expectedSoql)
     {
         $query = $this->qb->select($select)
@@ -40,9 +39,7 @@ class QueryBuilderIntegrationTest extends TestCase
         $this->assertSame($expectedSoql, $query->parse());
     }
 
-    /**
-     * @dataProvider whereProvider
-     */
+    #[DataProvider('whereProvider')]
     public function testWhere(AbstractSelect $select, AbstractFrom $from, AbstractCompare $where, string $expectedSoql)
     {
         $query = $this->qb->select($select)
@@ -52,9 +49,7 @@ class QueryBuilderIntegrationTest extends TestCase
         $this->assertSame($expectedSoql, $query->parse());
     }
 
-    /**
-     * @dataProvider whereWithParametersProvider
-     */
+    #[DataProvider('whereWithParametersProvider')]
     public function testWhereWithParameters(
         AbstractSelect $select,
         AbstractFrom $from,
@@ -70,9 +65,7 @@ class QueryBuilderIntegrationTest extends TestCase
         $this->assertSame($expectedSoql, $query->parse());
     }
 
-    /**
-     * @dataProvider havingProvider
-     */
+    #[DataProvider('havingProvider')]
     public function testHaving(AbstractSelect $select, AbstractFrom $from, AbstractCompare $having, string $expectedSoql)
     {
         $query = $this->qb->select($select)
@@ -82,9 +75,7 @@ class QueryBuilderIntegrationTest extends TestCase
         $this->assertSame($expectedSoql, $query->parse());
     }
 
-    /**
-     * @dataProvider havingWithParametersProvider
-     */
+    #[DataProvider('havingWithParametersProvider')]
     public function testHavingWithParameters(
         AbstractSelect $select,
         AbstractFrom $from,
@@ -100,9 +91,7 @@ class QueryBuilderIntegrationTest extends TestCase
         $this->assertSame($expectedSoql, $query->parse());
     }
 
-    /**
-     * @dataProvider groupByProvider
-     */
+    #[DataProvider('groupByProvider')]
     public function testGroupBy(AbstractSelect $select, AbstractFrom $from, AbstractGroupBy $groupBy, string $expectedSoql)
     {
         $query = $this->qb->select($select)
@@ -112,9 +101,7 @@ class QueryBuilderIntegrationTest extends TestCase
         $this->assertSame($expectedSoql, $query->parse());
     }
 
-    /**
-     * @dataProvider orderByProvider
-     */
+    #[DataProvider('orderByProvider')]
     public function testOrderBy(AbstractSelect $select, AbstractFrom $from, AbstractOrderBy $orderBy, string $expectedSoql)
     {
         $query = $this->qb->select($select)
@@ -210,9 +197,9 @@ class QueryBuilderIntegrationTest extends TestCase
         $this->assertSame($expectedQuery, $query->parse());
     }
 
-    public function selectProvider(): array
+    public static function selectProvider(): array
     {
-        $ef = $this->createExpressionFactory();
+        $ef = static::createExpressionFactory();
 
         return [
             'fields' => [
@@ -265,9 +252,9 @@ class QueryBuilderIntegrationTest extends TestCase
         ];
     }
 
-    public function whereProvider(): array
+    public static function whereProvider(): array
     {
-        $ef = $this->createExpressionFactory();
+        $ef = static::createExpressionFactory();
 
         return [
             'equals' => [
@@ -327,9 +314,9 @@ class QueryBuilderIntegrationTest extends TestCase
         ];
     }
 
-    public function whereWithParametersProvider(): array
+    public static function whereWithParametersProvider(): array
     {
-        $ef = $this->createExpressionFactory();
+        $ef = static::createExpressionFactory();
 
         return [
             'equals' => [
@@ -398,9 +385,9 @@ class QueryBuilderIntegrationTest extends TestCase
         ];
     }
 
-    public function havingProvider(): array
+    public static function havingProvider(): array
     {
-        $ef = $this->createExpressionFactory();
+        $ef = static::createExpressionFactory();
 
         return [
             'equals' => [
@@ -460,9 +447,9 @@ class QueryBuilderIntegrationTest extends TestCase
         ];
     }
 
-    public function havingWithParametersProvider(): array
+    public static function havingWithParametersProvider(): array
     {
-        $ef = $this->createExpressionFactory();
+        $ef = static::createExpressionFactory();
 
         return [
             'equals' => [
@@ -531,9 +518,9 @@ class QueryBuilderIntegrationTest extends TestCase
         ];
     }
 
-    public function groupByProvider(): array
+    public static function groupByProvider(): array
     {
-        $ef = $this->createExpressionFactory();
+        $ef = static::createExpressionFactory();
 
         return [
             'simple' => [
@@ -557,9 +544,9 @@ class QueryBuilderIntegrationTest extends TestCase
         ];
     }
 
-    public function orderByProvider(): array
+    public static function orderByProvider(): array
     {
-        $ef = $this->createExpressionFactory();
+        $ef = static::createExpressionFactory();
 
         return [
             'default' => [
@@ -583,7 +570,7 @@ class QueryBuilderIntegrationTest extends TestCase
         ];
     }
 
-    private function createExpressionFactory(): ExpressionFactory
+    private static function createExpressionFactory(): ExpressionFactory
     {
         return new ExpressionFactory();
     }

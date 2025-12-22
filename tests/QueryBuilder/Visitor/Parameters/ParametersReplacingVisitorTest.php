@@ -3,11 +3,14 @@
 namespace Xsolve\SalesforceClient\QueryBuilder\Visitor\Parameters;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Xsolve\SalesforceClient\QueryBuilder\Expr\Compare\AbstractMultiCompare;
 use Xsolve\SalesforceClient\QueryBuilder\Expr\Compare\AbstractSingleCompare;
 
 class ParametersReplacingVisitorTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testVisitSingleCompare()
     {
         $visitor = $this->createVisitor([

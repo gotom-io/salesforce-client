@@ -26,7 +26,7 @@ class BlablacarRedisStorageTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!class_exists('Blablacar\Redis\Client')) {
             $this->markTestSkipped('blablaca/redis-client must be present in order to run the tests');

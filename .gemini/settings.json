@@ -1,0 +1,8 @@
+{
+  "security": {
+    "auth": {
+      "enforcedType": "gemini-api-key",
+      "selectedType": "gemini-api-key"
+    }
+  }
+}

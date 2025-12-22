@@ -14,7 +14,7 @@ class RequestTokenStorageTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->storage = new RequestTokenStorage();
     }
@@ -28,11 +28,9 @@ class RequestTokenStorageTest extends TestCase
         $this->assertSame($token, $this->storage->get());
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testGetNoEntry()
     {
+        $this->expectException(\LogicException::class);
         $this->storage->get();
     }
 }
